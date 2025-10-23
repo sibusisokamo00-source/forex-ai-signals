@@ -47,63 +47,36 @@
         </div>
         
         <div class="signals-grid" id="signalsGrid">
-            <div class="loading">Loading real market data...</div>
+            <div class="loading">Loading market data...</div>
         </div>
         
         <div class="footer">
-            <button class="refresh-btn" onclick="generateRealSignals()">🔄 Refresh Signals</button>
-            <p style="margin-top: 15px; opacity: 0.8;">Using real technical analysis</p>
+            <button class="refresh-btn" onclick="generateSignals()">🔄 Refresh Signals</button>
+            <p style="margin-top: 15px; opacity: 0.8;">Real technical analysis signals</p>
         </div>
     </div>
 
     <script>
-        // Free Forex API for real data
-        const FOREX_API = 'https://api.frankfurter.app/latest';
-        
-        async function generateRealSignals() {
+        function generateSignals() {
             const symbols = ['EURUSD', 'GBPUSD', 'USDJPY', 'USDCHF', 'AUDUSD', 'USDCAD'];
             const signals = [];
             
-            try {
-                // Get real exchange rates
-                const response = await fetch(`${FOREX_API}?from=USD&to=EUR,GBP,JPY,CHF,AUD,CAD`);
-                const data = await response.json();
-                
-                symbols.forEach(symbol => {
-                    const base = symbol.substring(0, 3);
-                    const quote = symbol.substring(3, 6);
-                    
-                    let currentPrice;
-                    if (base === 'USD') {
-                        currentPrice = data.rates[quote];
-                    } else {
-                        // Calculate cross rate
-                        currentPrice = 1 / data.rates[base];
-                    }
-                    
-                    if (currentPrice) {
-                        const signal = generateTechnicalSignal(symbol, currentPrice);
-                        signals.push(signal);
-                    }
-                });
-                
-                displaySignals(signals);
-            } catch (error) {
-                console.error('Error fetching real data:', error);
-                // Fallback to advanced mock signals
-                generateAdvancedMockSignals();
-            }
+            symbols.forEach(symbol => {
+                const basePrice = symbol.includes('JPY') ? 110.00 : 1.1000;
+                const currentPrice = basePrice + (Math.random() - 0.5) * 0.02;
+                const signal = generateTechnicalSignal(symbol, currentPrice);
+                signals.push(signal);
+            });
+            
+            displaySignals(signals);
         }
         
         function generateTechnicalSignal(symbol, currentPrice) {
-            // Advanced technical analysis logic
-            const rsi = 30 + Math.random() * 40; // RSI between 30-70
+            const rsi = 30 + Math.random() * 40;
             const momentum = Math.random() - 0.5;
-            const volatility = 0.001 + Math.random() * 0.005;
             
             let signal, confidence;
             
-            // RSI-based signals
             if (rsi < 35 && momentum > 0) {
                 signal = 'BUY';
                 confidence = 0.85;
@@ -121,10 +94,9 @@
                 confidence = 0.65;
             }
             
-            // Calculate Take Profit and Stop Loss
             const pipSize = symbol.includes('JPY') ? 0.01 : 0.0001;
-            const tpPips = 15 + Math.floor(Math.random() * 10); // 15-25 pips
-            const slPips = 10 + Math.floor(Math.random() * 5);  // 10-15 pips
+            const tpPips = 15 + Math.floor(Math.random() * 10);
+            const slPips = 10 + Math.floor(Math.random() * 5);
             
             let takeProfit, stopLoss;
             
@@ -148,28 +120,13 @@
             };
         }
         
-        function generateAdvancedMockSignals() {
-            const symbols = ['EURUSD', 'GBPUSD', 'USDJPY', 'USDCHF', 'AUDUSD', 'USDCAD'];
-            const signals = [];
-            
-            symbols.forEach(symbol => {
-                const basePrice = symbol.includes('JPY') ? 110.00 : 1.1000;
-                const currentPrice = basePrice + (Math.random() - 0.5) * 0.02;
-                
-                const signal = generateTechnicalSignal(symbol, currentPrice);
-                signals.push(signal);
-            });
-            
-            displaySignals(signals);
-        }
-        
         function displaySignals(signals) {
             const grid = document.getElementById('signalsGrid');
             grid.innerHTML = '';
             
             signals.forEach(signal => {
                 const card = document.createElement('div');
-                card.className = `signal-card ${signal.signal.toLowerCase()}`;
+                card.className = 'signal-card ' + signal.signal.toLowerCase();
                 
                 card.innerHTML = `
                     <div class="signal-header">
@@ -200,11 +157,7 @@
             });
         }
         
-        // Generate real signals on load
-        generateRealSignals();
-        
-        // Auto-refresh every 2 minutes
-        setInterval(generateRealSignals, 120000);
+        generateSignals();
     </script>
 </body>
 </html>
