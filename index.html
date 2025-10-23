@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forex AI Signal Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; padding: 20px; color: white;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-size: 2rem; margin-bottom: 10px; }
+        .signals-grid { display: grid; gap: 15px; margin-bottom: 30px; }
+        .signal-card {
+            background: rgba(255, 255, 255, 0.95); color: #333;
+            padding: 20px; border-radius: 15px; border-left: 6px solid #6b7280;
+        }
+        .signal-card.buy { border-left-color: #10b981; }
+        .signal-card.sell { border-left-color: #ef4444; }
+        .signal-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .symbol { font-size: 1.3rem; font-weight: bold; }
+        .signal { font-weight: bold; padding: 6px 12px; border-radius: 20px; background: #f3f4f6; }
+        .signal.buy { background: #dcfce7; color: #166534; }
+        .signal.sell { background: #fee2e2; color: #991b1b; }
+        .price { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; }
+        .footer { text-align: center; margin-top: 30px; }
+        .refresh-btn { 
+            background: rgba(255,255,255,0.2); border: none; color: white;
+            padding: 12px 24px; border-radius: 25px; font-size: 1rem; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Forex AI Signal Generator</h1>
+            <p>Demo Version - Mock Signals</p>
+        </div>
+        
+        <div class="signals-grid" id="signalsGrid">
+            <!-- Signals will appear here -->
+        </div>
+        
+        <div class="footer">
+            <button class="refresh-btn" onclick="generateSignals()">🔄 New Signals</button>
+        </div>
+    </div>
+
+    <script>
+        function generateSignals() {
+            const symbols = ['EURUSD', 'GBPUSD', 'USDJPY', 'XAUUSD'];
+            const signals = [];
+            
+            symbols.forEach(symbol => {
+                const signalsList = ['BUY', 'SELL', 'HOLD'];
+                const signal = signalsList[Math.floor(Math.random() * signalsList.length)];
+                const price = (1.1 + Math.random() * 0.1).toFixed(5);
+                
+                signals.push({
+                    symbol: symbol,
+                    signal: signal,
+                    price: price,
+                    confidence: (0.6 + Math.random() * 0.3).toFixed(3)
+                });
+            });
+            
+            displaySignals(signals);
+        }
+        
+        function displaySignals(signals) {
+            const grid = document.getElementById('signalsGrid');
+            grid.innerHTML = '';
+            
+            signals.forEach(signal => {
+                const card = document.createElement('div');
+                card.className = `signal-card ${signal.signal.toLowerCase()}`;
+                
+                card.innerHTML = `
+                    <div class="signal-header">
+                        <div class="symbol">${signal.symbol}</div>
+                        <div class="signal ${signal.signal.toLowerCase()}">${signal.signal}</div>
+                    </div>
+                    <div class="price">$${signal.price}</div>
+                    <div>Confidence: ${(signal.confidence * 100).toFixed(1)}%</div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        // Generate initial signals
+        generateSignals();
+    </script>
+</body>
+</html>
